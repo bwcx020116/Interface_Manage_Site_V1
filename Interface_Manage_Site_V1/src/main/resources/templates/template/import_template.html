@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <th:block th:replace="common/meta"/>
+    <title>事件接口管理系统</title>
+    <th:block th:replace="common/link"/>
+</head>
+
+<body>
+<section>
+    <div class="wrapper">
+        <!-- top navbar-->
+        <th:block th:replace="common/header"/>
+        <!-- sidebar-->
+        <th:block th:replace="common/left(menu='template')"/>
+        <!-- Main section-->
+        <section>
+            <div class="content-wrapper">
+                <h3>
+                    <!-- Breadcrumb right aligned-->
+                    <div class="pull-right">
+                        <button id="btnBack" type="button"
+                                class="btn btn-default">
+                            返回
+                        </button>
+
+                    </div>
+                    模板管理
+                    <!-- Small text for title-->
+                    <span class="text-sm hidden-xs">&nbsp;</span>
+                    <!-- Breadcrumb below title-->
+
+                </h3>
+                <!-- START panel-->
+                <div class="panel">
+                    <div class="panel-heading">&nbsp;</div>
+                    <div class="panel-body">
+                        <form method="get" id="newForm" class="form-horizontal"
+                              data-parsley-validate="" onsubmit="return false">
+
+                            <fieldset>
+
+                                <div class="form-group mb">
+                                    <label class="control-label col-sm-2">文件</label>
+                                    <div class="col-sm-8">
+                                        <input type="hidden" name="fileDir" id="fileDir"/>
+                                        <div class="kv-avatar">
+                                            <input id="fileUploader" type="file" name="file" class="file-loading"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb">
+                                    <label class="control-label col-sm-2">来源&nbsp;*</label>
+
+                                    <div class="col-sm-8">
+                                        <select class="form-control" required="required"
+                                                id="src" name="src">
+                                            <th:block th:replace="common/src"/>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group mb">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button type="submit" class="btn btn-info">
+                                            保存
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </form>
+                        <span>注：文件每行为一个key-value键值对，如："city":"string"</span>
+                    </div>
+
+                </div>
+                <!-- END panel-->
+
+            </div>
+
+        </section>
+
+        <!-- Page footer-->
+        <th:block th:replace="common/footer"/>
+    </div>
+</section>
+<th:block th:replace="common/include"/>
+<th:block th:replace="template/js/import_template_js"/>
+</body>
+
+</html>
+
+

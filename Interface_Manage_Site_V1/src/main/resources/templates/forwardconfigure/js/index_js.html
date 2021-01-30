@@ -1,0 +1,128 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+  var forwardconfigure = function() {
+
+    return {
+      //main function to initiate the module
+      init : function() {
+        //初始化事件
+        this.initEvent();
+        this.addName();
+        //初始化提交
+        Sys
+            .initSubmit({
+              //校验表单ID
+              //formId:"newForm",
+              //提交参数
+              submitParam : {
+
+                "initForm" : function() {
+                  return true;
+                },
+                                "btnSubmitingVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存中...",
+                                "btnVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存",
+                                "btnId":"btnSave",
+                //"ajaxType":"post";
+                "ajaxUrl" : "/forwardconfigure/save.json",
+                //"formId" : "newForm",
+                "successTip":"操作成功！",
+                //"successUrl" : "/forwardconfigure/index.html",
+                "successCallback": function (resp) {
+                                if (!resp.success) {
+                    $("#spanErrMsg").html("");
+                    mes="";
+                    if(resp.resultMsg=="metadata name is not empty"){
+                      mes="元数据类型不能为空!";
+                                    }
+                                    if(resp.resultMsg=="The name of API is duplicated"){
+                      mes="API名称已存在!";
+                                    }
+                                if(resp.resultMsg=="API name is not empty"){
+                      mes="API名称不能为空!";
+                                    }
+                  if(resp.resultMsg=="template is empty"){
+                      mes="配置的模板不能为空!";
+                                    }
+                  if(resp.resultMsg=="please upload template"){
+                      mes="模板不存在,请在模板管理处重新上传模板!";
+                                    }
+                  if(resp.resultMsg=="configure failed"){
+                      mes="请重新配置模板!";
+                                    }
+                  $("#spanErrMsg").html(mes)
+                                    return;
+                                }
+                Sys.alertSuccess({successMsg:"配置输出模板成功！",callbackFunc:function(){
+                                            //返回到本模块首页
+                                             location.href = "/forwardconfigure/index.html";
+                                            }});
+
+                               }
+              },
+              //提交方法
+              submitHandler : Sys.submitForm
+
+            });
+
+      },
+      /**
+       * 初始化事件
+       */
+      initEvent : function() {
+
+        //返回链接
+        $("#btnBack")
+            .click(
+                function() {
+                  location.href = "/index.html";
+                });
+        $("#metadata").change(function(){
+                    var html="";
+                        $.ajax({
+                        url: "/forwardconfigure/"+$("#metadata").val()+"/getMetadataTemplate.json",
+                        success: function (data) {
+                          // alert(data);
+                           $.each(data, function(i,template){
+                               html+="<option value='"+template.name+"'>"+template.name+"</option>";
+                          });
+                           $("#name_0").html(html);
+                         }
+                    });
+      });
+            i=1;
+
+        },
+
+    addName : function() {
+       document.getElementById("btnAdd").onclick=function(){
+           document.getElementById("d").innerHTML+= '<div  id="div_'+i+'"class="form-group mb">'+
+             '<label for="name_'+i+'" class="col-sm-2 control-label">属性名称&nbsp;*</label><div class="col-sm-6">'+
+             '<select class="form-control" autocomplete="off" onchange="change('+i+')"'+
+                          ' id="name_'+i+'" name="name_'+i+'">'+
+              '</select>'+
+                  '</div>'+
+                   ' <button type="button" class="btn btn-info" id="btnMin" onclick="del('+i+')"/>'+
+                      '删除'+
+                   ' </button>'+
+               ' </div>';
+
+                var html="";
+                $.ajax({
+                       url: "/forwardconfigure/"+$("#metadata").val()+"/getMetadataTemplate.json",
+                       success: function (data) {
+                          $.each(data, function(j,template){
+                              html+="<option value='"+template.name+"'>"+template.name+"</option>";
+                           });
+                         $("#name_"+i).html(html);
+                          i=i+1;
+                         }
+                 });
+        };
+    }
+  }
+}();
+  $(document).ready(function() {
+    forwardconfigure.init();
+  });
+    /*]]>*/
+</script>

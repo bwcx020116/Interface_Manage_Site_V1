@@ -1,0 +1,63 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+	var New = function() {
+
+		return {
+			//main function to initiate the module
+			init : function() {
+				//初始化事件
+				this.initEvent();
+
+				//初始化提交
+				Sys
+						.initSubmit({
+							//校验表单ID
+							//formId:"newForm",
+							//校验规则
+
+							//提交参数
+							submitParam : {
+
+								"initForm" : function() {
+									return true;
+								},
+                                "btnSubmitingVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存中...",
+                                "btnVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存",
+                                "btnId":"btnSave",
+								//"ajaxType":"post";
+								"ajaxUrl" : "/template/save.json",
+								//"formId" : "newForm",
+								//"successTip":"操作成功！",
+								"successUrl" : "/template/index.html"
+							},
+							//提交方法
+							submitHandler : Sys.submitForm
+
+						});
+
+			},
+			/**
+			 * 初始化事件
+			 */
+			initEvent : function() {
+
+				//返回链接
+				$("#btnBack")
+						.click(
+								function() {
+									//
+									location.href = "/template/index.html";
+								});
+
+			}
+
+		};
+	}();
+
+	$(document).ready(function() {
+
+		New.init();
+
+	});
+    /*]]>*/
+</script>

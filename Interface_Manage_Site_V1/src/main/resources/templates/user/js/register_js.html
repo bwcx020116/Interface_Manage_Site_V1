@@ -1,0 +1,30 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+        $("#btnReg").click(function(){
+            name=$("#loginName").val();
+            pwd=$("#loginPwd").val();
+
+            var str=JSON.stringify({"loginName":name,"loginPwd":pwd});
+             $.ajax({
+                  url: "/user/register.json",
+                  type: "post",
+                  contentType:"application/json",
+                  data: str,
+                  success:function(resp){
+                     if(resp.success==false){
+                        $("#spanErrMsg").html("该用户名已被注册！");
+                       return ;
+                    }else{
+                      location.href="/user/login.html";
+                    }
+
+                  }
+
+
+
+                 });
+
+
+            });
+    /*]]>*/
+</script>

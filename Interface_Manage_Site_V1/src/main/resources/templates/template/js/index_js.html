@@ -1,0 +1,155 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+	var Index = function() {
+
+		return {
+
+			//初始化
+			init : function() {
+
+				//注册事件
+				this.initEvent();
+
+				//初始化表格
+				Sys.initTable(
+
+				this.getTableParam()
+
+				);
+
+			},
+
+			initEvent : function() {
+
+				$("#btnNew")
+						.click(
+								function() {
+									location.href = '/template/new.html';
+								});
+                $("#btnSearch").click(function () {
+                    Sys.refreshTable(Index.getTableParam());
+                });
+                $("#searchForm").submit(function () {
+
+                    Sys.refreshTable(Index.getTableParam());
+                    return false;
+                });
+				//返回链接
+				$("#btnBack")
+						.click(
+								function() {
+									//
+									location.href = "/template/index.html";
+								});
+
+                $("#btnImportFile").click(function () {
+                    location.href="/template/import_template.html";
+
+                });
+			},
+
+			edit : function(id) {
+
+				var url ='/template/ID/edit.html'.replace(/ID/g, id);
+				window.location.href = url;
+
+			},
+			remove : function(id) {
+
+                Sys.confirm({showMsg:"确定要删除吗？",callbackFunc:function(isConfirm){
+                        //确定删除
+                        if(isConfirm){
+
+
+                            $
+                                .ajax({
+                                    url :'/template/delete.json',
+                                    data : "id=" + id,
+                                    type : 'post',
+                                    //async:false,
+                                    success : function(resp) {
+                                        if (!resp.success) {
+                                            Sys.alert(resp.resultMsg);
+                                            return;
+                                        }
+
+
+                                        Sys.alertSuccess({successMsg:"删除成功！",callbackFunc:function(){
+                                            //刷新表格
+                                            Sys.refreshTable(Index.getTableParam());
+                                            }});
+
+
+                                    },
+                                    error : function(resp) {
+                                        //alert("error！");
+                                    }
+                                });
+
+
+                        }
+
+                    }});
+			},
+
+			getTableParam : function() {
+
+				return {
+					tableId : "tabList",
+                    url : '/template/query_by_page.json',
+                    queryParams: $("#searchForm").serializeObject(),
+
+					columns : [
+							{
+								"field" : "name",
+								"title" : "名称",
+								"align" : "center",
+                                "sortable":true
+							},
+                            {
+								"field" : "type",
+								"title" : "类型",
+								"align" : "center",
+                                "sortable":true
+							},
+                           {
+                            "field" : "src",
+                            "title" : "来源",
+                            "align" : "center",
+                            "sortable":true
+
+                           },
+							{
+								field : 'id',
+								title : '操作',
+								align : 'center',
+								formatter : function(value, row, index) {
+
+                                    var btnEdit='<a href="javascript:;" onclick="Index.edit(\'ID\')"  class="btn btn-link" style="padding:0px 6px">编辑</a>';
+                                    var btnRemove='<a href="javascript:;" onclick="Index.remove(\'ID\')"  class="btn btn-link" style="padding:0px 6px">删除</a>';
+
+                                    return [ btnEdit,  btnRemove ]
+											.join('').replace(/ID/g, value);
+
+								}
+							}
+
+					]
+
+				}
+
+			}
+
+		};
+
+	}();
+
+	//入口
+	$(document).ready(function() {
+
+		Index.init();
+
+	});
+    /*]]>*/
+</script>
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+  <th:block th:replace="common/meta"/>
+  <title>事件接口管理系统</title>
+  <th:block th:replace="common/link"/>
+   <script type="text/javascript">
+            function del(o){
+              document.getElementById("d").removeChild(document.getElementById("div_"+o));
+            }
+            function change(i){
+              var  myselect=document.getElementById("name_"+i);
+              var index=myselect.selectedIndex;
+              var content=myselect.options[index].value;
+              myselect.options[index].setAttribute("selected","true");
+            }
+   </script>
+</head>
+
+<body>
+<section>
+  <div class="wrapper">
+    <!-- top navbar-->
+    <th:block th:replace="common/header"/>
+    <!-- sidebar-->
+    <th:block th:replace="common/left(menu='forwardconfigure')"/>
+    <!-- Main section-->
+    <section>
+      <div class="content-wrapper">
+        <h3>
+          <!-- Breadcrumb right aligned-->
+          <div class="pull-right">
+            <button id="btnBack" type="button"
+                    class="btn btn-default">
+              返回
+            </button>
+          </div>
+          正向查询模板配置
+          <!-- Small text for title-->
+          <span class="text-sm hidden-xs">&nbsp;</span>
+          <!-- Breadcrumb below title-->
+        </h3>
+        <!-- START panel-->
+        <div class="panel">
+          <div class="panel-heading">&nbsp;</div>
+            <input type="hidden" id="pos_count" name="pos_count" value="1"/>
+          <div class="panel-body">
+            <form method="get" id="newForm" class="form-horizontal"
+                  data-parsley-validate="" onsubmit="return false">
+              <fieldset>
+                <!-- input text start -->
+               <div class="form-group mb">
+                  <label for="metadata" class="control-label col-sm-2">元数据类型&nbsp;*</label>
+                  <div class="col-sm-6">
+                    <select class="form-control"
+                            id="metadata" name="metadata">
+                        <option value="">请选择元数据类型</option>
+                      <option  th:each="template:${templateList}" th:value="${template.src}" th:text="${template.src}"></option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group mb">
+                  <label class="control-label col-sm-2">接口名称&nbsp;*</label>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control"  required="required"   maxlength="50" data-parsley-required-message="请输入配置的接口名称！"
+                           id="name" name="name" value="" />
+                  </div>
+                </div>
+                <div class="form-group mb">
+                  <label class="control-label col-sm-2">描述&nbsp;*</label>
+                  <div class="col-sm-6">
+                    <input type="text" class="form-control"  required="required"   maxlength="100" data-parsley-required-message="请输入相关描述信息！"
+                           id="description" name="description" value="" />
+                  </div>
+                </div>
+                <div class="form-group mb">
+                  <label for="name_0" class="col-sm-2 control-label">属性名称&nbsp;*</label>
+                  <div class="col-sm-6">
+                    <select class="form-control"
+                            id="name_0" name="name_0">
+                        <option value="">请选择属性名称</option>
+                    </select>
+                  </div>
+                  <button type="button" class="btn btn-info" id="btnAdd">
+                    添加
+                  </button>
+                </div>
+                <div  id="d">
+                </div>
+                <div class="form-group mb">
+                  <label class="control-label col-sm-2"></label>
+                  <div class="col-sm-8">
+                    <span id="spanErrMsg" style="color:red;"></span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <div class="form-group mb">
+                  <div class="col-sm-4 col-sm-offset-2">
+                    <button type="submit" class="btn btn-info" id="btnSave">
+                      保存
+                    </button>
+                  </div>
+                </div>
+              </fieldset>
+
+            </form>
+
+          </div>
+        </div>
+        <!-- END panel-->
+      </div>
+
+    </section>
+
+
+    <!-- Page footer-->
+    <th:block th:replace="common/footer"/>
+  </div>
+</section>
+
+
+<th:block th:replace="common/include"/>
+<th:block th:replace="forwardconfigure/js/index_js"/>
+</body>
+
+</html>
+
+

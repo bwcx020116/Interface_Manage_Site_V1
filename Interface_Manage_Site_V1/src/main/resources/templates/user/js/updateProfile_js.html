@@ -1,0 +1,66 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+	var Update = function() {
+
+		return {
+			init : function() {
+				//初始化事件
+				this.initEvent();
+
+				//初始化提交
+				Sys
+						.initSubmit({
+							//校验表单ID
+							//formId:"newForm",
+							//校验规则
+							//提交参数
+							submitParam : {
+								"initForm" : function() {
+									return true;
+								},
+                                "btnSubmitingVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存中...",
+                                "btnVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存",
+                                "btnId":"btnSave",
+								//"ajaxType":"post";
+								"ajaxUrl" : "/user/updateUser.json",
+								//"formId" : "newForm",
+								//"successTip":"更新成功！",
+								"successCallback": function (resp) {
+                                if (!resp.success) {
+                                    $("#spanErrMsg").html("密码和确认密码必须一致!");
+                                    return;
+                                }
+                                location.href = "/user/login.html";
+                            }
+							},
+							//提交方法
+							submitHandler : Sys.submitForm
+
+						});
+
+			},
+			/**
+			 * 初始化事件
+			 */
+			initEvent : function() {
+
+				//返回链接
+				$("#btnBack")
+						.click(
+								function() {
+									//
+									location.href = "/index.html";
+								});
+
+			}
+
+		};
+	}();
+
+	$(document).ready(function() {
+
+		Update.init();
+
+	});
+    /*]]>*/
+</script>

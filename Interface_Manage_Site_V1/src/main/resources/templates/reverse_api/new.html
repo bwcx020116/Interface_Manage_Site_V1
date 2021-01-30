@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:replace="common/meta"/>
+	<title>事件接口管理系统</title>
+	<th:block th:replace="common/link"/>
+<script type="text/javascript">
+        function delAtt(o,size){
+		    var att_count=document.getElementById("att_flag").value;
+			if(att_count==1){
+				alert("输入参数不能为空");
+				return;
+			  }
+			  if (size > o ){
+			    document.getElementById("attdiv_"+o).parentNode.removeChild(document.getElementById("attdiv_"+o));
+				document.getElementById("att_flag").value=att_count-1;
+				return;
+			  }
+               document.getElementById("d1").removeChild(document.getElementById("attdiv_"+o));
+			   document.getElementById("att_flag").value=att_count-1;
+            }
+            function changeAtt(j){
+              var  myselect=document.getElementById("attname_"+j);
+              var index=myselect.selectedIndex;
+              var content=myselect.options[index].value;
+              myselect.options[index].setAttribute("selected","true");
+            }
+            function delMeta(o,size){
+			   var meta_count=document.getElementById("meta_flag").value;
+              if(meta_count==1){
+				alert("输出参数不能为空");
+				return;
+			  }
+			  if (size>o){
+			    document.getElementById("metadiv_"+o).parentNode.removeChild(document.getElementById("metadiv_"+o));
+				document.getElementById("meta_flag").value=meta_count-1;
+				return;
+			  }
+              document.getElementById("d2").removeChild(document.getElementById("metadiv_"+o));
+			  document.getElementById("meta_flag").value=meta_count-1;
+            }
+            function changeMeta(i){
+              var  myselect=document.getElementById("name_"+i);
+              var index=myselect.selectedIndex;
+              var content=myselect.options[index].value;
+              myselect.options[index].setAttribute("selected","true");
+            }
+    </script>
+</head>
+
+<body>
+<section>
+	<div class="wrapper">
+		<!-- top navbar-->
+		<th:block th:replace="common/header"/>
+		<!-- sidebar-->
+		<th:block th:replace="common/left(menu='reverse_api')"/>
+		<!-- Main section-->
+		<section>
+			<div class="content-wrapper">
+				<h3>
+					<!-- Breadcrumb right aligned-->
+					<div class="pull-right">
+						<button id="btnBack" type="button"
+								class="btn btn-default">
+							返回
+						</button>
+
+					</div>
+					反向查询API
+					<!-- Small text for title-->
+					<span class="text-sm hidden-xs">&nbsp;</span>
+					<!-- Breadcrumb below title-->
+				</h3>
+				<input type="hidden" name="meta_flag" id="meta_flag" value=""/>
+				<input type="hidden" name="att_flag" id="att_flag" value="" />
+				<input type="hidden" name="meta_counter" id="meta_counter" th:value="${meta_counter}" />
+				<input type="hidden" name="att_counter" id="att_counter" th:value="${att_counter}" />
+				<!-- START panel-->
+				<div class="panel">
+					<div class="panel-heading">&nbsp;</div>
+					<div class="panel-body">
+						<form method="get" id="newForm" class="form-horizontal"
+							  data-parsley-validate="" onsubmit="return false">
+							<input type="hidden" name="id" id="id" th:value="${reverseapivo.id}" />
+							<input type="hidden" name="apitype" id="apitype" th:value="${reverseapivo.apitype}" />
+							<fieldset>
+								<!-- input text start -->
+								<div class="form-group mb">
+									<label class="control-label col-sm-2">名称&nbsp;*</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" required="required" maxlength="50"
+											   id="name" name="name" th:value="${reverseapivo.name}" data-parsley-required-message="请输入名称！"/>
+									</div>
+								</div>
+								<!-- input text end -->
+								<div class="form-group mb">
+									<label class="col-sm-2 control-label">描述&nbsp;*</label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control" required="required" maxlength="100"
+											   id="description" name="description" th:value="${reverseapivo.description}" data-parsley-required-message="请输入描述！"/>
+									</div>
+								</div>
+								<!-- input text end -->
+								<div class="form-group mb">
+									<label  for="searchtype" class="col-sm-2 control-label">查询类型&nbsp;*</label>
+									<div class="col-sm-6">
+										<select class="form-control"
+												id="searchtype" name="searchtype">
+											<option   th:selected="${reverseapivo.searchtype}=='精确查询'"  value="精确查询" text="精确查询">精确查询</option>
+											<option   th:selected="${reverseapivo.searchtype}=='模糊查询'"   value="模糊查询"  text="模糊查询">模糊查询</option>
+										</select>
+									</div>
+								</div>
+							  <div class="form-group mb" th:each="t,tStat:${reverseapivo.inputParam}" th:id="'attdiv_'+${tStat.index}">
+									<label  th:for="'attname_'+${tStat.index}" class="col-sm-2 control-label">属性名称&nbsp;*</label>
+									<div class="col-sm-6" >
+										<select   class="form-control"
+												th:id="'attname_'+${tStat.index}" th:name="'attname_'+${tStat.index}">
+											<option  th:each="template:${templateList}" th:selected="${template.name}==${t}" th:value="${template.name}" th:text="${template.name}"></option>
+										</select>
+									</div>
+									<button type="button" class="btn btn-info"  th:onclick="'delAtt('+${tStat.index}+','+${tStat.size}+')'">删除</button>
+								</div>
+                                    
+								<div  id="d1">
+								</div>
+
+								<!-- input text start -->
+								<div class="form-group mb" th:each="m,mStat:${reverseapivo.outputParam}" th:id="'metadiv_'+${mStat.index}">
+									<label  th:for="'name_'+${mStat.index}" class="col-sm-2 control-label">元数据类型&nbsp;*</label>
+									<div class="col-sm-6" >
+										<select   class="form-control"
+												th:id="'name_'+${mStat.index}" th:name="'name_'+${mStat.index}">
+											<option th:each="metadata:${origindataList}" th:selected="${metadata}==${m}"  th:value="${metadata}" th:text="${metadata}" ></option>
+											<span th:text="${origindataList}"></span>
+										</select>
+									</div>
+									<button type="button" class="btn btn-info"  th:onclick="'delMeta('+${mStat.index}+','+${mStat.size}+')'">删除</button>
+								</div>
+								<div  id="d2">
+								</div>
+								<div class="form-group mb">
+									<div class="col-sm-4 col-sm-offset-2">
+										<button  type="button" class="btn btn-info" id="btnAddAtt">添加属性</button>
+										<button  type="button" class="btn btn-info" id="btnAddMeta">添加元数据</button>
+									</div>
+								</div>
+							</fieldset>
+
+							<fieldset>
+								<div class="form-group mb">
+									<div class="col-sm-4 col-sm-offset-2">
+										<button type="submit" class="btn btn-info" id="btnSave">
+											保存
+										</button>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+				<!-- END panel-->
+			</div>
+		</section>
+
+		<!-- Page footer-->
+		<th:block th:replace="common/footer"/>
+	</div>
+</section>
+
+<th:block th:replace="common/include"/>
+<th:block th:replace="reverse_api/js/new_js"/>
+</body>
+
+</html>
+
+

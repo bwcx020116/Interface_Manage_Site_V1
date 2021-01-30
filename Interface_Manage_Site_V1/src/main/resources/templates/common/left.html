@@ -1,0 +1,51 @@
+<aside class="aside">
+    <!-- START Sidebar (left)-->
+    <div class="aside-inner">
+        <nav data-sidebar-anyclick-close="" class="sidebar">
+            <!-- START sidebar nav-->
+            <ul class="nav">
+                <!-- START user info-->
+                <li>
+                    <div id="user-block">
+                        <div class="item user-block">
+                            <!-- User picture-->
+                            <div class="user-block-picture">
+                                <div class="user-block-status">
+                                    <a
+                                            href="/index.html"><img
+                                            src='/app/img/user/06.jpg'
+                                            width="60"
+                                            height="60"
+                                            class="img-thumbnail img-circle"/></a>
+                                    <div class="circle circle-success circle-lg"
+                                         style="display:none"></div>
+                                </div>
+                            </div>
+                            <!-- Name and Job-->
+                            <div class="user-block-info">
+                                <a id="gUserNickName" href="javascript:;" class="user-block-name" th:text="${session.user==null?'未登录':session.user.loginName}">
+
+                                </a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </li>
+                <!-- END user info-->
+                <!-- Iterates over all sidebar items-->
+
+                <li th:each="permit:${session.permitList}" th:class="${menu==permit.code?'active':''}">
+                    <a th:href="${permit.url}">
+
+                        <th:block th:utext="${permit.icon}"></th:block><span th:text="${permit.name}">
+                                </span>
+                    </a>
+                </li>
+            </ul>
+            <!-- END sidebar nav-->
+        </nav>
+    </div>
+    <!-- END Sidebar (left)-->
+
+</aside>

@@ -1,0 +1,95 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+	var ImportTemplate = function() {
+
+		return {
+			//main function to initiate the module
+			init : function() {
+				//初始化事件
+				this.initEvent();
+
+				//初始化提交
+				Sys
+						.initSubmit({
+							//校验表单ID
+							//formId:"newForm",
+							//校验规则
+							//提交参数
+							submitParam : {
+
+								"initForm" : function() {
+									
+									return true;
+
+								},
+                                "btnSubmitingVal":"保存中...",
+                                "btnVal":"保存",
+                                "btnId":"btnSave",
+								//"ajaxType":"post";
+								"ajaxUrl" : "/template/import.json",
+								//"formId" : "newForm",
+								//"successTip":"操作成功！",
+								"successUrl" : "/template/index.html",
+								"successCallback": function (resp) {
+								    if (!resp.success) {
+									  Sys.alertSuccess({successMsg:"文件导入失败！",callbackFunc:function(){
+                                            //返回到本模块首页
+                                             location.href = "/template/import_template.html";
+                                      }});
+									}
+									Sys.alertSuccess({successMsg:"文件导入成功！",callbackFunc:function(){
+                                            //返回到本模块首页
+                                             location.href = "/template/index.html";
+                                    }});
+								
+								}
+								
+							},
+							//提交方法
+							submitHandler : Sys.submitForm
+
+						});
+
+
+
+                Sys
+                    .initUpload({
+
+                        uploadUrl: "/common/upload.json",
+                        fileId: "fileUploader",
+                        //defaultPreviewContent: '<img src="DEFAULT_AVATAR" style="max-height:160px" /><h6 class="text-muted">点击选择</h6>'.replace(/DEFAULT_AVATAR/g, defaultAvatar),
+                        fileuploaded: function (event, data, previewId,
+                                                index) {
+                            var fileDir = data.response.data;
+                            $("#fileDir").val(fileDir);
+                        }
+
+                    });
+
+
+            },
+			/**
+			 * 初始化事件
+			 */
+			initEvent : function() {
+
+				//返回链接
+				$("#btnBack")
+						.click(
+								function() {
+									//
+									location.href = "/template/index.html";
+								});
+
+			}
+
+		};
+	}();
+
+	$(document).ready(function() {
+
+		ImportTemplate.init();
+
+	});
+    /*]]>*/
+</script>

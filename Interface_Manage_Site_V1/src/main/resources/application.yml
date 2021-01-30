@@ -1,0 +1,17 @@
+server:
+  port:
+
+spring:
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+      cache: false
+
+mybatis:
+  typeAliasesPackage: iie.ac.cn.site.model
+  mapperLocations: classpath:mapper/*.xml
+template:
+  uploadDir: /home/temp/

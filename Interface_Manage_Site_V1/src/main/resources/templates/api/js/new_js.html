@@ -1,0 +1,98 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+	var New = function() {
+
+		return {
+			//main function to initiate the module
+			init : function() {
+				//初始化事件
+				this.initEvent();
+                this.addName();
+				//初始化提交
+				Sys
+						.initSubmit({
+							//校验表单ID
+							//formId:"newForm",
+							//校验规则
+
+							//提交参数
+							submitParam : {
+
+								"initForm" : function() {
+									return true;
+								},
+                                "btnSubmitingVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存中...",
+                                "btnVal":"<span class=\"btn-label\"><i class=\"fa fa-check\"></i></span>保存",
+                                "btnId":"btnSave",
+								//"ajaxType":"post";
+								"ajaxUrl" : "/api/save.json",
+								//"formId" : "newForm",
+								//"successTip":"操作成功！",
+								"successUrl" : "/api/index.html"
+							},
+							//提交方法
+							submitHandler : Sys.submitForm
+
+						});
+
+			},
+			/**
+			 * 初始化事件
+			 */
+			initEvent : function() {
+
+				//返回链接
+				$("#btnBack")
+						.click(
+								function() {
+									//
+									location.href = "/api/index.html";
+								});
+			   j=$("#att_counter").val();
+               att_size=j;
+			   $("#att_flag").val(j);
+
+			},
+			 addName : function() {
+			    document.getElementById("btnAddAtt").onclick=function(){
+                document.getElementById("d1").innerHTML+= '<div  id="attdiv_'+j+'"class="form-group mb">'+
+             '<label for="attname_'+j+'" class="col-sm-2 control-label">属性名称&nbsp;*</label><div class="col-sm-6">'+
+             '<select class="form-control" autocomplete="off" onchange="changeAtt('+j+')"'+
+                          ' id="attname_'+j+'" name="attname_'+j+'">'+
+              '</select>'+
+                  '</div>'+
+                   ' <button type="button" class="btn btn-info" id="btnMin" onclick="delAtt('+j+','+att_size+')"/>'+
+                      '删除'+
+                   ' </button>'+
+               ' </div>';
+
+                var html="";
+                origindata=$("#metadata").val();
+                var meta=JSON.stringify({"metadata":origindata});
+                $.ajax({
+                       url: "/api/getAllAttName.json",
+                       type:"post",
+                       contentType:"application/json",
+                       data:meta,
+                       success: function (data) {
+                          $.each(data, function(k,template){
+                              html+="<option value='"+template.name+"'>"+template.name+"</option>";
+                           });
+                         $("#attname_"+j).html(html);
+                          j=j+1;
+                         }
+                 });
+				 att_counts=$("#att_flag").val();
+                 var att_counts2=parseInt(att_counts)+1;
+				 $("#att_flag").val(att_counts2);
+              };
+			 }
+		};
+	}();
+
+	$(document).ready(function() {
+		New.init();
+
+	});
+    /*]]>*/
+</script>

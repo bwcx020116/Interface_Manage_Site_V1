@@ -1,0 +1,216 @@
+<script>
+var options = {
+        series: {
+            lines: {
+                show: false
+            },
+            points: {
+                show: true,
+                radius: 4
+            },
+            splines: {
+                show: true,
+                tension: 0.4,
+                lineWidth: 1,
+                fill: 0.5
+            }
+        },
+        grid: {
+            borderColor: '#eee',
+            borderWidth: 1,
+            hoverable: true,
+            backgroundColor: '#fcfcfc'
+        },
+        tooltip: true,
+        tooltipOpts: {
+            content: function (label, x, y) { return x + ' : ' + y; }
+        },
+        xaxis: {
+            tickColor: '#fcfcfc',
+            mode: 'categories'
+        },
+        yaxis: {
+            min: 0,
+            max: 10000000, // optional: use it for a clear represetation
+            tickColor: '#eee',
+            //position: 'right' or 'left',
+            tickFormatter: function (v) {
+                return v/* + ' visitors'*/;
+            }
+        },
+        shadowSize: 0
+    };
+    $.ajax({
+        url: "/IPChart.json",
+        success: function (data) {
+
+            var chart = $('.chart-spline');
+            if(chart.length)
+                $.plot(chart, data, options);
+
+        }
+    });
+	//制作URL图表开始
+	var optionsURL = {
+                    series: {
+                        lines: {
+                            show: true,
+                            fill: 0.8
+                        },
+                        points: {
+                            show: true,
+                            radius: 4
+                        }
+                    },
+                    grid: {
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                        hoverable: true,
+                        backgroundColor: '#fcfcfc'
+                    },
+                    tooltip: true,
+                    tooltipOpts: {
+                        content: function (label, x, y) { return x + ' : ' + y; }
+                    },
+                    xaxis: {
+                        tickColor: '#fcfcfc',
+                        mode: 'categories'
+                    },
+                    yaxis: {
+                        min: 0,
+                        tickColor: '#eee',
+                        // position: 'right' or 'left'
+                        tickFormatter: function (v) {
+                            return v ;
+                        }
+                    },
+                    shadowSize: 0
+                };
+		$.ajax({
+        url: "/URLChart.json",
+        success: function (data) {
+            var chart = $('.chart-area');
+            if(chart.length)
+                $.plot(chart, data, optionsURL);
+
+        }
+    });
+	//制作URL图表结束
+	//制作Sample图表开始
+
+
+    var optionsSample = {
+                    series: {
+                        bars: {
+                            align: 'center',
+                            lineWidth: 0,
+                            show: true,
+                            barWidth: 0.6,
+                            fill: 0.9
+                        }
+                    },
+                    grid: {
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                        hoverable: true,
+                        backgroundColor: '#fcfcfc'
+                    },
+                    tooltip: true,
+                    tooltipOpts: {
+                        content: function (label, x, y) { return x + ' : ' + y; }
+                    },
+                    xaxis: {
+                        tickColor: '#fcfcfc',
+                        mode: 'categories'
+                    },
+                    yaxis: {
+                        // position: 'right' or 'left'
+                        tickColor: '#eee'
+                    },
+                    shadowSize: 0
+                };
+		$.ajax({
+        url: "/SampleChart.json",
+        success: function (data) {
+            var chart = $('.chart-bar');
+            if(chart.length)
+                $.plot(chart, data, optionsSample);
+
+        }
+       });
+	//制作Sample图表结束
+	//制作Domain图表开始
+
+
+    var optionsDomain = {
+                    series: {
+                        lines: {
+                            show: true,
+                            fill: 0.01
+                        },
+                        points: {
+                            show: true,
+                            radius: 4
+                        }
+                    },
+                    grid: {
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                        hoverable: true,
+                        backgroundColor: '#fcfcfc'
+                    },
+                    tooltip: true,
+                    tooltipOpts: {
+                        content: function (label, x, y) { return x + ' : ' + y; }
+                    },
+                    xaxis: {
+                        tickColor: '#eee',
+                        mode: 'categories'
+                    },
+                    yaxis: {
+                        // position: 'right' or 'left'
+                        tickColor: '#eee'
+                    },
+                    shadowSize: 0
+                };
+      $.ajax({
+        url: "/DomainChart.json",
+        success: function (data) {
+            var chart = $('.chart-line');
+            if(chart.length)
+                $.plot(chart, data, optionsDomain);
+
+        }
+       });
+	//制作Domain图表结束
+	function realtimeIP(){
+	$.ajax({
+			url: "/realtime_IP.json",
+			success: function (data) {
+				$("#realtimeIP").html(data)
+			}
+		});
+	}
+	function realtimeURL(){
+	$.ajax({
+			url: "/realtime_URL.json",
+			success: function (data) {
+				$("#realtimeURL").html(data)
+			}
+		});
+	}
+	function realtimeSample(){
+	$.ajax({
+			url: "/realtime_Sample.json",
+			success: function (data) {
+				$("#realtimeSample").html(data)
+			}
+		});
+	}
+	realtimeIP();
+	realtimeURL();
+	realtimeSample();
+	//setInterval("realtimeIP()",3*1000);
+	//setInterval("realtimeURL()",3*1000);
+	//setInterval("realtimeSample()",3*1000);
+</script>

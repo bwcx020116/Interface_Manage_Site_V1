@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    /*<![CDATA[*/
+        $("#btnLogin").click(function(){
+            name=$("#loginName").val();
+            pwd=$("#loginPwd").val();
+            var str=JSON.stringify({"loginName":name,"loginPwd":pwd})
+             $.ajax({
+                  url: "/user/login.json",
+                  type: "post",
+                  contentType:"application/json",
+                  data: str,
+                  success:function(resp){
+                     if(resp.success==false){
+                       if(resp.resultCode=="loginNameErr"){
+                           $("#spanErrMsg").html("账号或密码错误");
+                        }
+                       return ;
+                    }else{
+                      $("btnLogin").html("登录中...")
+					   window.location.href="/index.html";
+					  }
+                    }
+                 });
+            });
+    /*]]>*/
+</script>

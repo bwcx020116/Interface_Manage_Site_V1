@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <th:block th:replace="common/meta"/>
+    <title>事件接口管理系统</title>
+    <th:block th:replace="common/link"/>
+    <script type="text/javascript">
+            function delAtt(o){
+              document.getElementById("d1").removeChild(document.getElementById("attdiv_"+o));
+            }
+            function changeAtt(j){
+              var  myselect=document.getElementById("attname_"+j);
+              var index=myselect.selectedIndex;
+              var content=myselect.options[index].value;
+              myselect.options[index].setAttribute("selected","true");
+            }
+            function delMeta(o){
+              document.getElementById("d2").removeChild(document.getElementById("div_"+o));
+            }
+            function changeMeta(i){
+              var  myselect=document.getElementById("name_"+i);
+              var index=myselect.selectedIndex;
+              var content=myselect.options[index].value;
+              myselect.options[index].setAttribute("selected","true");
+            }
+
+    </script>
+</head>
+
+<body>
+<section>
+    <div class="wrapper">
+        <!-- top navbar-->
+        <th:block th:replace="common/header"/>
+        <!-- sidebar-->
+        <th:block th:replace="common/left(menu='reversedconfigure')"/>
+        <!-- Main section-->
+        <section>
+            <div class="content-wrapper">
+                <h3>
+                    <!-- Breadcrumb right aligned-->
+                    <div class="pull-right">
+                        <button id="btnBack" type="button"
+                                class="btn btn-default">
+                            返回
+                        </button>
+                    </div>
+                    反向查询模板配置
+                    <span class="text-sm hidden-xs">&nbsp;</span>
+                </h3>
+                <!-- START panel-->
+                <div class="panel">
+                    <div class="panel-heading">&nbsp;</div>
+                    <input type="hidden" id="pos_count" name="pos_count" value="1"/>
+                    <div class="panel-body">
+                        <form method="get" id="newForm" class="form-horizontal"
+                              data-parsley-validate="" onsubmit="return false">
+                            <fieldset>
+                                <div class="form-group mb">
+                                    <label class="control-label col-sm-2">接口名称&nbsp;*</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control"  required="required"   maxlength="50" data-parsley-required-message="请输入配置的接口名称！"
+                                               id="name" name="name" value="" />
+                                    </div>
+                                </div>
+                                <div class="form-group mb">
+                                    <label class="control-label col-sm-2">描述&nbsp;*</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control"  required="required"   maxlength="100" data-parsley-required-message="请输入相关描述信息！"
+                                               id="description" name="description" value="" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb">
+                                    <label  for="searchtype" class="col-sm-2 control-label">查询类型&nbsp;*</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control"
+                                                id="searchtype" name="searchtype">
+                                            <option value="">请选择查询类型</option>
+                                            <option   th:value="精确查询" th:text="精确查询">精确查询</option>
+                                            <option   th:value="模糊查询" th:text="模糊查询">模糊查询</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group mb">
+                                    <label  for="name_0" class="control-label col-sm-2">元数据类型&nbsp;*</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control"
+                                                id="name_0" name="name_0">
+                                            <option value="">请选择元数据类型</option>
+                                            <option  th:each="metedata:${metadataList}" th:value="${metedata.name}" th:text="${metedata.name}"></option>
+                                        </select>
+                                    </div>
+<!--                                    <button type="button" class="btn btn-info" id="btnAddMeta">-->
+<!--                                        添加-->
+<!--                                    </button>-->
+                                </div>
+                                <div  id="d2">
+                                </div>
+                                <div class="form-group mb">
+                                    <label  for="attname_0" class="col-sm-2 control-label">属性名称&nbsp;*</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control"
+                                                id="attname_0" name="attname_0">
+                                            <option value="">请选择属性名称</option>
+                                            <option  th:each="template:${templateList}" th:value="${template.name}" th:text="${template.name}"></option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-info" id="btnAddAtt">
+                                        添加
+                                    </button>
+                                </div>
+                                <div  id="d1">
+                                </div>
+                                <!-- input text start -->
+
+
+                                <div class="form-group mb">
+                                    <label class="control-label col-sm-2"></label>
+                                    <div class="col-sm-8">
+                                        <span id="spanErrMsg" style="color:red;"></span>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-group mb">
+                                    <div class="col-sm-4 col-sm-offset-2">
+                                        <button type="submit" class="btn btn-info" id="btnSave">
+                                            保存
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </form>
+
+                    </div>
+                </div>
+                <!-- END panel-->
+            </div>
+
+        </section>
+
+
+        <!-- Page footer-->
+        <th:block th:replace="common/footer"/>
+    </div>
+</section>
+
+
+<th:block th:replace="common/include"/>
+<th:block th:replace="reversedconfigure/js/index_js"/>
+</body>
+
+</html>
+
+

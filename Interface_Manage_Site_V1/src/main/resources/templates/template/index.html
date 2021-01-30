@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+  <th:block th:replace="common/meta"/>
+  <title>事件接口管理系统</title>
+  <th:block th:replace="common/link"/>
+</head>
+
+
+<body>
+<div class="wrapper">
+  <!-- top navbar-->
+  <th:block th:replace="common/header"/>
+
+  <th:block th:replace="common/left(menu='template')"/>
+  <!-- Main section-->
+  <section>
+    <!-- Page content-->
+    <div class="content-wrapper">
+
+      <h3>
+        <!-- Breadcrumb right aligned-->
+        <div class=" pull-right">
+          <button type="button" id="btnNew" class="btn btn-info">
+            新增
+          </button>
+          <button type="button" id="btnImportFile" class="btn btn-info">
+            导入
+          </button>
+        </div>
+        模板管理
+        <!-- Small text for title-->
+        <span class="text-sm hidden-xs"></span>
+        <!-- Breadcrumb below title-->
+      </h3>
+
+
+      <!-- START row-->
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- START panel-->
+          <div class="panel">
+            <div class="panel-body ">
+              <form role="form" id="searchForm" class="form-inline pull-right">
+                <div class="form-group">
+                  <label for="searchLike" class="sr-only">名称</label>
+                  <input type="text" id="searchLike" name="searchLike" placeholder="名称"
+                         class="form-control"/>
+                </div>
+                <div class="form-group" style="display: none">
+                  <button type="button" id="btnSearch" class="btn btn-labeled btn-info">
+                    <span class="btn-label"><i class="fa fa-search"></i> </span>查询
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="panel-body">
+              <table id="tabList" data-mobile-responsive="true"
+                     class="table table-hover">
+              </table>
+              <div class="fixed-table-pagination"></div>
+            </div>
+          </div>
+          <!-- END panel-->
+        </div>
+      </div>
+      <!-- END row-->
+    </div>
+  </section>
+  <!-- Page footer-->
+  <th:block th:replace="common/footer"/>
+</div>
+
+<th:block th:replace="common/include"/>
+<th:block th:include="template/js/index_js"/>
+
+</body>
+
+</html>
