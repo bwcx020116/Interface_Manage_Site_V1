@@ -621,48 +621,73 @@ public class IReverApiServiceImpl implements IReverApiService {
         }
         String scrollId = searchResponse.getScrollId(); // 获取scrollId
         SearchHit[] searchHits = searchResponse.getHits().getHits();
+        Set<String> temp_inp=new HashSet<String>();
+        Set<String> temp_cli_inp=new HashSet<String>();//传递http请求中的输入
 
         //处理返回的搜索结果
         for (SearchHit hit : searchHits) {
             Map<String, Object> map = hit.getSourceAsMap();
-            Set<String> temp_inp=new HashSet<String>();
             Template template =iTemplateService.loadByNameAndSrc(keyList.get(0), "incident");
 
             if ("object".equals(template.getType())){
                 String dict_value =(String) map.get("dict_value");
+                if(dict_value==null){
+                    break;
+                }
                 dict_value = dict_value.replace("\"", "'").replace("\\", "").
                         replace("['{","[{").replace("}']","}]");
-
+                //parse ES
                 List<JSONObject> objects = (List<JSONObject>) JSONArray.parseArray(dict_value,JSONObject.class);
                 for(JSONObject jsonObject:objects){
                     temp_inp.add((String)jsonObject.get("值"));
                     temp_inp.add((String)jsonObject.get("描述"));
                 }
-
+                //parse http input
+                List<JSONObject> json_obj = (List<JSONObject>) JSONArray.parseArray((String)jsonObj.get(keyList.get(0)),JSONObject.class);
+                for(JSONObject json:json_obj){
+                    temp_cli_inp.add((String)json.get("值"));
+                    temp_cli_inp.add((String)json.get("描述"));
+                }
             }else if ("list".equals(template.getType())){
                 String value =(String) map.get("value");
+                if(value==null){
+                    break;
+                }
                 value = value.replace("\"", "'").replace("\\", "");
-                //compare value
+                //parse ES
                 List<String> objList = (List<String>)JSONArray.parseArray(value,String.class);
                 for(String strObj:objList){
                     temp_inp.add(strObj);
                 }
+                //parse http input
+                List<String> cli_inpu_obj = (List<String>)JSONArray.parseArray((String)jsonObj.get(keyList.get(0)),String.class);
+                for(String cliObj:cli_inpu_obj){
+                    temp_cli_inp.add(cliObj);
+                }
             }else if ("string".equals(template.getType())){
                 String value =(String) map.get("value");
+                if(value==null){
+                    break;
+                }
                 value = value.replace("\"", "'").replace("\\", "");
-                //compare value
+                //parse ES
                 temp_inp.add(value);
+                //parse http input
+                temp_cli_inp.add(value);
             }
 
             if("1".equals(searchType)){//精确查询
-                if(temp_inp.contains((String)jsonObj.get(keyList.get(0)))){//
-                    resList.add((String)map.get("keyword"));
-                }
-            }else{
-                for(String term:temp_inp){//模糊查询
-                    if(temp_inp.contains((String)jsonObj.get(keyList.get(0)))){
+                for(String s:temp_cli_inp){
+                    if(temp_inp.contains(s)){
                         resList.add((String)map.get("keyword"));
-                        break;
+                    }
+                }
+            }else{//模糊查询
+                for(String s:temp_cli_inp){
+                    for(String t:temp_inp){
+                        if(t.contains(s)){
+                            resList.add((String)map.get("keyword"));
+                        }
                     }
                 }
             }
@@ -682,44 +707,67 @@ public class IReverApiServiceImpl implements IReverApiService {
             //处理返回的搜索结果
             for (SearchHit hit : searchHits) {
                 Map<String, Object> map = hit.getSourceAsMap();
-                Set<String> temp_inp=new HashSet<String>();
-                Template template = iTemplateService.loadByNameAndSrc(keyList.get(0), "incident");
+                Template template =iTemplateService.loadByNameAndSrc(keyList.get(0), "incident");
 
                 if ("object".equals(template.getType())){
                     String dict_value =(String) map.get("dict_value");
+                    if(dict_value==null){
+                        break;
+                    }
                     dict_value = dict_value.replace("\"", "'").replace("\\", "").
                             replace("['{","[{").replace("}']","}]");
-
+                    //parse ES
                     List<JSONObject> objects = (List<JSONObject>) JSONArray.parseArray(dict_value,JSONObject.class);
                     for(JSONObject jsonObject:objects){
                         temp_inp.add((String)jsonObject.get("值"));
                         temp_inp.add((String)jsonObject.get("描述"));
                     }
-
+                    //parse http input
+                    List<JSONObject> json_obj = (List<JSONObject>) JSONArray.parseArray((String)jsonObj.get(keyList.get(0)),JSONObject.class);
+                    for(JSONObject json:json_obj){
+                        temp_cli_inp.add((String)json.get("值"));
+                        temp_cli_inp.add((String)json.get("描述"));
+                    }
                 }else if ("list".equals(template.getType())){
                     String value =(String) map.get("value");
+                    if(value==null){
+                        break;
+                    }
                     value = value.replace("\"", "'").replace("\\", "");
-                    //compare value
+                    //parse ES
                     List<String> objList = (List<String>)JSONArray.parseArray(value,String.class);
                     for(String strObj:objList){
                         temp_inp.add(strObj);
                     }
+                    //parse http input
+                    List<String> cli_inpu_obj = (List<String>)JSONArray.parseArray((String)jsonObj.get(keyList.get(0)),String.class);
+                    for(String cliObj:cli_inpu_obj){
+                        temp_cli_inp.add(cliObj);
+                    }
                 }else if ("string".equals(template.getType())){
                     String value =(String) map.get("value");
+                    if(value==null){
+                        break;
+                    }
                     value = value.replace("\"", "'").replace("\\", "");
-                    //compare value
+                    //parse ES
                     temp_inp.add(value);
+                    //parse http input
+                    temp_cli_inp.add(value);
                 }
 
                 if("1".equals(searchType)){//精确查询
-                    if(temp_inp.contains((String)jsonObj.get(keyList.get(0)))){//
-                        resList.add((String)map.get("keyword"));
-                    }
-                }else{
-                    for(String t:temp_inp){//模糊查询
-                        if(t.contains((String)jsonObj.get(keyList.get(0)))){
+                    for(String s:temp_cli_inp){
+                        if(temp_inp.contains(s)){
                             resList.add((String)map.get("keyword"));
-                            break;
+                        }
+                    }
+                }else{//模糊查询
+                    for(String s:temp_cli_inp){
+                        for(String t:temp_inp){
+                            if(t.contains(s)){
+                                resList.add((String)map.get("keyword"));
+                            }
                         }
                     }
                 }
@@ -728,16 +776,14 @@ public class IReverApiServiceImpl implements IReverApiService {
         //根据incidentID查询整个Incident
 
         Set<String> keySet = jsonObj.keySet();
-        jsonObj.remove(keyList.get(0));
-        keySet.remove(keyList.get(0));
         List<String> outTemp=new ArrayList<>(keySet);
-        List<String> final_res_list=new ArrayList<>();
+        Set<String> final_res_set=new HashSet<>();
         for(String ids:resList){
             JSONObject json = new JSONObject();
             json.put("incident",ids);
             List<Map<String, Object>> mapRes =iApiService.SearchNotPage(index, type, json, outTemp);
             if(matchIncident(mapRes,jsonObj,searchType)){ //判断各个字段是否与模板及值一致，如果不一致，移除resList的incident ID
-                final_res_list.add(ids);
+                final_res_set.add(ids);
             }
         }
 
@@ -752,19 +798,83 @@ public class IReverApiServiceImpl implements IReverApiService {
         boolean succeeded = clearScrollResponse.isSucceeded();
         ESClientUtils.close(client);
         if(succeeded==true){
-            return final_res_list;
+            List<String> res=new ArrayList<>(final_res_set);
+            List<Incident> incidents=new ArrayList<>();
+            for(String r:res){
+                Incident incident= getIncidentHappenTime(index, type, r);
+                if(incident.getStart_time()!=""){
+                    incidents.add(incident);
+                }
+            }
+            return  sortTimeList(incidents);
         }else{
             return null;
         }
     }
 
+    private Incident getIncidentHappenTime(String index, String type, String incidentID) {
+        RestHighLevelClient client= ESClientUtils.getClient();
+        Incident incident  =null;
+        SearchRequest searchRequest = new SearchRequest();
+        final Scroll scroll = new Scroll(TimeValue.timeValueMinutes(1L));
+        searchRequest.indices(index);
+        searchRequest.types(type);
+        searchRequest.scroll(scroll);
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder query = QueryBuilders.boolQuery().must(
+                QueryBuilders.termQuery("key", "事件发生时间")).must(
+                QueryBuilders.termQuery("keyword", incidentID));
+        searchSourceBuilder=searchSourceBuilder.query(query);
+        searchSourceBuilder.from(0);
+        searchSourceBuilder.size(30);
+        searchRequest.source(searchSourceBuilder);
+        SearchResponse searchResponse = null;
+        try {
+            searchResponse = client.search(searchRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String scrollId = searchResponse.getScrollId(); // 获取scrollId
+        SearchHit[] searchHits = searchResponse.getHits().getHits();
+
+        //处理返回的搜索结果
+        for (SearchHit hit : searchHits) {
+            Map<String, Object> map = hit.getSourceAsMap();
+            String value= (String) map.get("value");
+            String pattern=getTimePattern(value);
+            incident= new Incident((String) map.get("keyword"), value, pattern);
+        }
+
+        ClearScrollRequest clearScrollRequest = new ClearScrollRequest(); //一旦查询全部完成，清除游标
+        clearScrollRequest.addScrollId(scrollId);
+        ClearScrollResponse clearScrollResponse = null;
+        try {
+            clearScrollResponse = client.clearScroll(clearScrollRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        boolean succeeded = clearScrollResponse.isSucceeded();
+        ESClientUtils.close(client);
+        if(succeeded==true){
+            return incident;
+        }else{
+            return null;
+        }
+
+    }
+
     private  boolean matchIncident(List<Map<String, Object>> mapRes, JSONObject jsonObj,String searchType) {
         Set<String> keySet = jsonObj.keySet();
-        boolean flag=true;//匹配
+        boolean flag=false;//匹配
         for(String item:keySet){
+            flag=false;
             for(Map<String,Object> m:mapRes){
                 String value =(String) m.get(item);
+                if(value==null){
+                    break;
+                }
                 Set<String> temp_inp=new HashSet<>();
+                Set<String> temp_cli_inp=new HashSet<>();
                 Template template = iTemplateService.loadByNameAndSrc(item, "incident");
                 if ("object".equals(template.getType())){
                     value = value.replace("\"", "'").replace("\\", "").
@@ -776,37 +886,58 @@ public class IReverApiServiceImpl implements IReverApiService {
                         temp_inp.add((String)jsonObject.get("描述"));
                     }
 
+                    //parse http input
+                    List<JSONObject> json_obj = (List<JSONObject>) JSONArray.parseArray((String)jsonObj.get(item),JSONObject.class);
+                    for(JSONObject json:json_obj){
+                        temp_cli_inp.add((String)json.get("值"));
+                        temp_cli_inp.add((String)json.get("描述"));
+                    }
+
                 }else if ("list".equals(template.getType())){
                     value = value.replace("\"", "'").replace("\\", "");
-                    //compare value
                     List<String> objList = (List<String>)JSONArray.parseArray(value,String.class);
                     for(String strObj:objList){
                         temp_inp.add(strObj);
                     }
+
+                    //parse http input
+                    List<String> cli_inpu_obj = (List<String>)JSONArray.parseArray((String)jsonObj.get(item),String.class);
+                    for(String cliObj:cli_inpu_obj){
+                        temp_cli_inp.add(cliObj);
+                    }
                 }else if("string".equals(template.getType())){
                     value = value.replace("\"", "'").replace("\\", "");
                     temp_inp.add(value);
+                    temp_cli_inp.add(value);
                 }
 
                 if("1".equals(searchType)){//精确查询
-                    if(!(temp_inp.contains((String)jsonObj.get(item)))){//
-                        flag=false;
+                    for(String s:temp_cli_inp){
+                        if(temp_inp.contains(s)){
+                            flag=true;
+                        }
                     }
                 }else{
-                    for(String t:temp_inp){//模糊查询
-                        if(!t.contains((String)jsonObj.get(item))){
-                            flag=false;
-                        }else{
-                            flag=true;
+                    for(String s:temp_cli_inp){
+                        for(String t:temp_inp){
+                            if(t.contains(s)){
+                                flag=true;
+                            }
+                        }
+                        if(flag==true){
                             break;
                         }
                     }
                 }
+            }
+            if(flag==false){
+                return flag;
             }
         }
 
         return flag;
     }
 
+   
 }
 
