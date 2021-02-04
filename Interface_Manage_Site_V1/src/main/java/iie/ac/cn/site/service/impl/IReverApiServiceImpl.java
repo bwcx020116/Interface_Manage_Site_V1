@@ -31,8 +31,8 @@ import java.util.*;
 
 @Service
 public class IReverApiServiceImpl implements IReverApiService {
-    private String index="cti_incident_1";//如：cti_ip_1
-    private String type="doc_type";
+    private String index="";
+    private String type="";
 
     @Autowired
     private ReverseapiMapper ReverapiMapper;
@@ -934,24 +934,6 @@ public class IReverApiServiceImpl implements IReverApiService {
         }
 
         return flag;
-    }
-
-    /**
-     * 获取list列表中的第一个元素:['a1','a2','a3']  -> a1
-     * @param value
-     * @return
-     */
-    private String getListFirst(Object value) {
-        String temp_str=(String)value;
-        int start_pos = temp_str.indexOf("[");
-        int end_pos = temp_str.lastIndexOf("]");
-        String temp_cut_string = temp_str.substring(start_pos + 1, end_pos);
-        String[] split = temp_cut_string.split(",");
-        if(split.length>0){
-            return  split[0];
-        }else{
-            return "";
-        }
     }
 }
 
