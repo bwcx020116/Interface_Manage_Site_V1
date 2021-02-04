@@ -611,7 +611,7 @@ public class IReverApiServiceImpl implements IReverApiService {
         BoolQueryBuilder query = QueryBuilders.boolQuery().must(QueryBuilders.termQuery("key",keyList.get(0)));
         searchSourceBuilder=searchSourceBuilder.query(query);
         searchSourceBuilder.from(0);
-        searchSourceBuilder.size(30);
+        searchSourceBuilder.size(9999);
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = null;
         try {
@@ -708,7 +708,6 @@ public class IReverApiServiceImpl implements IReverApiService {
             for (SearchHit hit : searchHits) {
                 Map<String, Object> map = hit.getSourceAsMap();
                 Template template =iTemplateService.loadByNameAndSrc(keyList.get(0), "incident");
-
                 if ("object".equals(template.getType())){
                     String dict_value =(String) map.get("dict_value");
                     if(dict_value==null){
@@ -774,7 +773,6 @@ public class IReverApiServiceImpl implements IReverApiService {
             }
         }
         //根据incidentID查询整个Incident
-
         Set<String> keySet = jsonObj.keySet();
         List<String> outTemp=new ArrayList<>(keySet);
         Set<String> final_res_set=new HashSet<>();
@@ -938,6 +936,22 @@ public class IReverApiServiceImpl implements IReverApiService {
         return flag;
     }
 
-   
+    /**
+     * 获取list列表中的第一个元素:['a1','a2','a3']  -> a1
+     * @param value
+     * @return
+     */
+    private String getListFirst(Object value) {
+        String temp_str=(String)value;
+        int start_pos = temp_str.indexOf("[");
+        int end_pos = temp_str.lastIndexOf("]");
+        String temp_cut_string = temp_str.substring(start_pos + 1, end_pos);
+        String[] split = temp_cut_string.split(",");
+        if(split.length>0){
+            return  split[0];
+        }else{
+            return "";
+        }
+    }
 }
 
