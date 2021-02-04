@@ -1,5 +1,6 @@
 package iie.ac.cn.site.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import iie.ac.cn.site.dao.ApiMapper;
 import iie.ac.cn.site.model.Api;
@@ -243,7 +244,7 @@ public class IApiServiceImpl implements IApiService {
 
         searchSourceBuilder=searchSourceBuilder.query(queryBuilder);
         searchSourceBuilder.from(0);
-        searchSourceBuilder.size(30);
+        searchSourceBuilder.size(9999);
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = null;
         try {
@@ -258,6 +259,7 @@ public class IApiServiceImpl implements IApiService {
         for(String temp:outputTemp){
             resMap.put(temp,null);//初始化为null
         }
+        resMap.put(set_to_list.get(0)+"_id",jsonObj.get(set_to_list.get(0)));
 
         //处理返回的搜索结果
         for (SearchHit hit : searchHits) {
@@ -270,14 +272,30 @@ public class IApiServiceImpl implements IApiService {
                 Template template = iTemplateService.loadByNameAndSrc(final_key, a[1]);
                 if ("object".equals(template.getType())){
                     String dict_value =(String) map.get("dict_value");
-                    dict_value = dict_value.replace("\"", "'").
-                            replace("\\", "").
-                            replace("['{","[{").replace("}']","}]");;
-                    resMap.put(final_key,dict_value);
-                }else if ("string".equals(template.getType())||"list".equals(template.getType())){
+                    if(dict_value==null){
+                        break;
+                    }
+                    dict_value = dict_value.replace("\"", "'").replace("\\", "").
+                            replace("['{","[{").replace("}']","}]");
+                    //parse ES
+                    List<JSONObject> objects = (List<JSONObject>) JSONArray.parseArray(dict_value,JSONObject.class);
+                    resMap.put(final_key,objects);
+                }else if ("list".equals(template.getType())){
                     String value =(String) map.get("value");
-                    String replaced_str = value.replace("\"", "'");
-                    resMap.put(final_key,replaced_str);
+                    if(value==null){
+                        break;
+                    }
+                    value = value.replace("\"", "'").replace("\\", "");
+                    //parse ES
+                    List<String> objList = (List<String>)JSONArray.parseArray(value,String.class);
+                    resMap.put(final_key,objList);
+                }else if ("string".equals(template.getType())){
+                    String value =(String) map.get("value");
+                    if(value==null){
+                        break;
+                    }
+                    value = value.replace("\"", "'").replace("\\", "");
+                    resMap.put(final_key,value);
                 }
             }
         }
@@ -303,13 +321,30 @@ public class IApiServiceImpl implements IApiService {
                     Template template = iTemplateService.loadByNameAndSrc(final_key, a[1]);
                     if ("object".equals(template.getType())){
                         String dict_value =(String) map.get("dict_value");
+                        if(dict_value==null){
+                            break;
+                        }
                         dict_value = dict_value.replace("\"", "'").replace("\\", "").
                                 replace("['{","[{").replace("}']","}]");
-                        resMap.put(final_key,dict_value);
-                    }else if ("string".equals(template.getType())||"list".equals(template.getType())){
+                        //parse ES
+                        List<JSONObject> objects = (List<JSONObject>) JSONArray.parseArray(dict_value,JSONObject.class);
+                        resMap.put(final_key,objects);
+                    }else if ("list".equals(template.getType())){
                         String value =(String) map.get("value");
-                        String replaced_str = value.replace("\"", "'");
-                        resMap.put(final_key,replaced_str);
+                        if(value==null){
+                            break;
+                        }
+                        value = value.replace("\"", "'").replace("\\", "");
+                        //parse ES
+                        List<String> objList = (List<String>)JSONArray.parseArray(value,String.class);
+                        resMap.put(final_key,objList);
+                    }else if ("string".equals(template.getType())){
+                        String value =(String) map.get("value");
+                        if(value==null){
+                            break;
+                        }
+                        value = value.replace("\"", "'").replace("\\", "");
+                        resMap.put(final_key,value);
                     }
                 }
             }
